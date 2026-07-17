@@ -1,0 +1,461 @@
+:root {
+  --bg: #070b14;
+  --panel: #0f172a;
+  --panel2: #111c31;
+  --line: rgba(148, 163, 184, 0.15);
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --blue: #38bdf8;
+  --violet: #818cf8;
+  --green: #22c55e;
+  --red: #ef4444;
+  --orange: #f97316;
+  --yellow: #f59e0b;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { min-height: 100%; }
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background: radial-gradient(circle at 20% 0, rgba(56, 189, 248, 0.1), transparent 28%), var(--bg);
+  color: var(--text);
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+button, input { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+h1, h2, p { margin: 0; }
+
+.appShell {
+  min-height: 100vh;
+  width: 100%;
+}
+
+.sidebar {
+  padding: 20px 14px;
+  border-right: 1px solid var(--line);
+  background: rgba(5, 10, 18, 0.97);
+  z-index: 50;
+}
+.brand { display: flex; align-items: center; gap: 11px; padding: 0 7px 22px; }
+.brandMark {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  font-weight: 950;
+  background: linear-gradient(135deg, var(--blue), var(--violet));
+}
+.brand strong, .brand span { display: block; }
+.brand strong { font-size: 14px; }
+.brand span { margin-top: 4px; color: var(--muted); font-size: 9px; }
+.sidebar nav { display: grid; gap: 7px; }
+.sidebar nav button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 45px;
+  padding: 0 13px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: #aebdd0;
+  cursor: pointer;
+  font-weight: 800;
+  text-align: left;
+}
+.sidebar nav button.active {
+  color: #fff;
+  border-color: rgba(56, 189, 248, 0.25);
+  background: rgba(56, 189, 248, 0.11);
+}
+
+main { min-width: 0; }
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.topbar h1 { font-size: 19px; }
+.topbar p, .panelTitle p { color: var(--muted); font-size: 10px; margin-top: 5px; }
+.titleRow, .actions { display: flex; align-items: center; gap: 8px; }
+.titleRow { min-width: 0; }
+.actions { justify-content: flex-end; flex-wrap: wrap; }
+.actions button, .panel button, .backBtn, .modeSwitch button, .menuBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.8);
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+.actions .primary, .primary {
+  border: 0 !important;
+  background: linear-gradient(135deg, var(--blue), var(--violet)) !important;
+}
+.actions .ai, .ai {
+  border-color: rgba(129, 140, 248, 0.4) !important;
+  background: rgba(129, 140, 248, 0.13) !important;
+}
+
+.statusBar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 14px 0;
+  padding: 10px 13px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: rgba(15, 23, 42, 0.56);
+  color: var(--muted);
+  font-size: 10px;
+}
+.statusBar i {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 12px var(--green);
+}
+.errorBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 12px;
+  border: 1px solid rgba(239, 68, 68, 0.42);
+  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #fecaca;
+  font-size: 12px;
+}
+.errorBox button {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 0 11px;
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  border-radius: 9px;
+  background: rgba(127, 29, 29, 0.3);
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+.periods { display: flex; gap: 7px; margin: 0 0 13px; }
+.periods button, .modeSwitch button {
+  padding: 9px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.6);
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 800;
+}
+.periods button.active, .modeSwitch button.active {
+  color: #fff;
+  border-color: rgba(56, 189, 248, 0.55);
+  background: rgba(56, 189, 248, 0.14);
+}
+
+.kpiGrid { display: grid; gap: 10px; margin-bottom: 10px; }
+.kpiCard, .panel {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(17, 28, 49, 0.96), rgba(9, 16, 29, 0.94));
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.16);
+}
+.kpiCard { min-height: 112px; padding: 15px; display: flex; flex-direction: column; }
+.kpiCard > span { color: var(--muted); font-size: 10px; font-weight: 800; }
+.kpiCard > strong { margin-top: 11px; font-size: 25px; letter-spacing: -0.04em; }
+.kpiCard small { margin-left: 3px; font-size: 11px; color: var(--muted); }
+.kpiCard em { margin-top: auto; color: var(--muted); font-size: 9px; font-style: normal; }
+.kpiCard.fd strong { color: var(--red); }
+.kpiCard.fl strong { color: var(--orange); }
+.kpiCard.cr strong { color: var(--blue); }
+.kpiCard.money strong { color: #4ade80; }
+.kpiCard.warning strong { color: var(--yellow); }
+.panel { padding: 15px; margin-bottom: 10px; }
+.panelTitle { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+.panelTitle h2 { font-size: 13px; }
+.chart { width: 100%; min-width: 0; height: 270px; }
+.chartPanel { min-width: 0; overflow: hidden; }
+.twoCol { display: grid; gap: 10px; }
+.rankList { display: grid; gap: 7px; }
+.rankRow {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  gap: 9px;
+  align-items: center;
+  padding: 8px 9px;
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: 10px;
+  background: rgba(30, 41, 59, 0.34);
+}
+.rankRow > b {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--blue);
+  font-size: 10px;
+}
+.rankRow span { min-width: 0; }
+.rankRow span strong, .rankRow span small { display: block; }
+.rankRow span strong { font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rankRow span small { color: var(--muted); font-size: 9px; margin-top: 2px; }
+.rankRow em { font-style: normal; font-weight: 900; font-size: 11px; white-space: nowrap; }
+
+.tableWrap { overflow: auto; border: 1px solid var(--line); border-radius: 11px; }
+table { width: 100%; border-collapse: collapse; min-width: 900px; }
+th, td { padding: 10px 11px; text-align: left; border-top: 1px solid var(--line); font-size: 10px; white-space: nowrap; }
+th { position: sticky; top: 0; z-index: 1; background: #182338; color: #cbd5e1; border-top: 0; }
+.countBadge { padding: 5px 8px; border-radius: 999px; background: rgba(56, 189, 248, 0.12); color: var(--blue); font-size: 9px; font-weight: 900; }
+.emptyState { min-height: 120px; display: grid; place-items: center; color: var(--muted); font-size: 11px; }
+.emptyState.compact { min-height: 80px; }
+.aiText { white-space: pre-wrap; line-height: 1.75; color: #dbeafe; font-size: 12px; }
+.settingsPage { display: grid; gap: 10px; }
+.panel label { display: block; color: var(--muted); font-size: 10px; font-weight: 800; margin-bottom: 7px; }
+.panel input { width: 100%; min-height: 43px; padding: 0 12px; border: 1px solid var(--line); border-radius: 10px; background: #08101e; color: #fff; }
+.saveBtn { margin-top: 10px; }
+.settingsGrid { display: grid; gap: 10px; }
+.settingsGrid button { min-height: 90px; justify-content: flex-start; text-align: left; }
+.settingsGrid button > span { flex: 1; }
+.settingsGrid strong, .settingsGrid small { display: block; }
+.settingsGrid small { color: var(--muted); font-size: 9px; margin-top: 5px; }
+.backBtn { margin-bottom: 10px; }
+.modeSwitch { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.loading { position: fixed; inset: 0; z-index: 999; display: grid; place-items: center; align-content: center; gap: 12px; background: rgba(3, 7, 18, 0.78); backdrop-filter: blur(6px); }
+.spinner { width: 40px; height: 40px; border: 4px solid rgba(148, 163, 184, 0.2); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.scrim { border: 0; padding: 0; }
+
+/* 강제 PC 모드: 화면 폭과 관계없이 PC 레이아웃 */
+.appShell.pcMode {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+}
+.appShell.pcMode .sidebar {
+  position: sticky;
+  top: 0;
+  left: auto;
+  width: auto;
+  height: 100vh;
+}
+.appShell.pcMode main { padding: 0 22px 40px; }
+.appShell.pcMode .topbar { min-height: 90px; align-items: center; flex-direction: row; }
+.appShell.pcMode .menuBtn, .appShell.pcMode .scrim { display: none !important; }
+.appShell.pcMode .actions { width: auto; display: flex; }
+.appShell.pcMode .statusBar { flex-direction: row; align-items: center; }
+.appShell.pcMode .periods { display: flex; }
+.appShell.pcMode .kpiGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.appShell.pcMode .twoCol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.appShell.pcMode .settingsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.appShell.pcMode .chart { height: 270px; }
+.appShell.pcMode .tableWrap { overflow: auto; border: 1px solid var(--line); }
+.appShell.pcMode table { display: table; min-width: 900px; }
+.appShell.pcMode thead { display: table-header-group; }
+.appShell.pcMode tbody { display: table-row-group; }
+.appShell.pcMode tr { display: table-row; }
+.appShell.pcMode th, .appShell.pcMode td { display: table-cell; }
+
+/* 강제 모바일 확대 모드: 참고 HTML의 body.mobile-large 배율을 React에 적용 */
+.appShell.mobileLarge {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+}
+.appShell.mobileLarge .sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: -280px;
+  width: 250px;
+  height: 100vh;
+  padding: 22px 16px;
+  transition: left 0.2s ease;
+  box-shadow: 20px 0 50px rgba(0, 0, 0, 0.35);
+}
+.appShell.mobileLarge .sidebar.open { left: 0; }
+.appShell.mobileLarge main {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  padding: 18px 14px 30px;
+}
+.appShell.mobileLarge .topbar {
+  min-height: auto;
+  padding: 0 0 15px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+}
+.appShell.mobileLarge .titleRow { width: 100%; }
+.appShell.mobileLarge .menuBtn {
+  display: inline-flex !important;
+  flex: 0 0 auto;
+  min-width: 48px;
+  min-height: 48px;
+}
+.appShell.mobileLarge .topbar h1 { font-size: 24px; }
+.appShell.mobileLarge .topbar p { font-size: 14px; line-height: 1.45; }
+.appShell.mobileLarge .actions {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+.appShell.mobileLarge .actions button {
+  min-width: 0;
+  min-height: 50px;
+  padding: 0 8px;
+  font-size: 14px;
+}
+.appShell.mobileLarge .statusBar {
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 13px 14px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.appShell.mobileLarge .errorBox {
+  flex-direction: column;
+  align-items: stretch;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.appShell.mobileLarge .errorBox button { width: 100%; min-height: 44px; }
+.appShell.mobileLarge .periods {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.appShell.mobileLarge .periods button {
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 4px;
+  font-size: 13px;
+}
+.appShell.mobileLarge .kpiGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+.appShell.mobileLarge .kpiCard {
+  min-height: 122px;
+  padding: 16px 13px;
+}
+.appShell.mobileLarge .kpiCard > span {
+  font-size: 12px;
+  line-height: 1.35;
+}
+.appShell.mobileLarge .kpiCard > strong {
+  margin-top: 10px;
+  font-size: 30px;
+  overflow-wrap: anywhere;
+}
+.appShell.mobileLarge .kpiCard small { font-size: 12px; }
+.appShell.mobileLarge .kpiCard em {
+  font-size: 11px;
+  line-height: 1.45;
+}
+.appShell.mobileLarge .twoCol {
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.appShell.mobileLarge .settingsGrid { grid-template-columns: 1fr; }
+.appShell.mobileLarge .panel {
+  padding: 15px 13px;
+  border-radius: 16px;
+}
+.appShell.mobileLarge .panelTitle h2 { font-size: 17px; }
+.appShell.mobileLarge .panelTitle p { font-size: 12px; line-height: 1.55; }
+.appShell.mobileLarge .chart { height: 275px; }
+.appShell.mobileLarge .rankRow { padding: 11px 9px; }
+.appShell.mobileLarge .rankRow span strong {
+  white-space: normal;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.appShell.mobileLarge .rankRow span small,
+.appShell.mobileLarge .rankRow em { font-size: 11px; }
+.appShell.mobileLarge .scrim {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.58);
+}
+.appShell.mobileLarge .tableWrap.mobileCards {
+  overflow: visible;
+  border: 0;
+}
+.appShell.mobileLarge .mobileCards table {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+.appShell.mobileLarge .mobileCards thead { display: none; }
+.appShell.mobileLarge .mobileCards tbody {
+  display: grid;
+  width: 100%;
+  gap: 10px;
+}
+.appShell.mobileLarge .mobileCards tr {
+  display: block;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(30, 41, 59, 0.38);
+}
+.appShell.mobileLarge .mobileCards td {
+  display: grid;
+  grid-template-columns: minmax(92px, 36%) minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  width: 100%;
+  padding: 8px 0;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  font-size: 13px;
+  line-height: 1.45;
+  white-space: normal;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.appShell.mobileLarge .mobileCards td:first-child { border-top: 0; }
+.appShell.mobileLarge .mobileCards td::before {
+  content: attr(data-label);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  text-align: left;
+}
+
+@media (max-width: 1000px) {
+  .appShell.pcMode { grid-template-columns: 190px minmax(0, 1fr); }
+  .appShell.pcMode .actions { max-width: 520px; }
+}
+
+@media (max-width: 520px) {
+  .appShell.mobileLarge .actions { grid-template-columns: 1fr 1fr; }
+  .appShell.mobileLarge .topbar h1 { font-size: 16px; }
+}
+
+@media (max-width: 390px) {
+  .appShell.mobileLarge main { padding: 12px 9px 24px; }
+  .appShell.mobileLarge .kpiGrid { grid-template-columns: 1fr; }
+  .appShell.mobileLarge .actions { grid-template-columns: 1fr; }
+  .appShell.mobileLarge .periods { grid-template-columns: repeat(2, 1fr); }
+}
