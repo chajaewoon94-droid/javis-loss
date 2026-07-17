@@ -491,3 +491,363 @@ th { position: sticky; top: 0; z-index: 1; background: #182338; color: #cbd5e1; 
   height: 34px;
   font-size: 12px;
 }
+
+/* ==================================================
+   JAVIS 관리자 PIN 인증
+================================================== */
+
+body.pinModalOpen {
+  overflow: hidden;
+}
+
+.pinOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(20, 89, 140, 0.18),
+      rgba(2, 6, 15, 0.82) 55%
+    );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: pinOverlayIn 0.2s ease;
+}
+
+.pinModal {
+  position: relative;
+  width: min(100%, 390px);
+  padding: 30px 28px 26px;
+  overflow: hidden;
+  border: 1px solid rgba(77, 181, 255, 0.32);
+  border-radius: 24px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(15, 31, 51, 0.98),
+      rgba(5, 14, 27, 0.99)
+    );
+  box-shadow:
+    0 35px 100px rgba(0, 0, 0, 0.55),
+    0 0 55px rgba(38, 167, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  animation: pinModalIn 0.25s ease;
+}
+
+.pinModal::before {
+  position: absolute;
+  top: 0;
+  right: 14%;
+  left: 14%;
+  height: 2px;
+  content: "";
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #39bdf8,
+    #7d8cff,
+    transparent
+  );
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.7);
+}
+
+.pinClose {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 11px;
+  background: rgba(15, 23, 42, 0.45);
+  color: #8193ab;
+  cursor: pointer;
+}
+
+.pinClose:hover {
+  border-color: rgba(125, 211, 252, 0.4);
+  color: #e5f5ff;
+}
+
+.pinIcon {
+  display: flex;
+  width: 64px;
+  height: 64px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 17px;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: 21px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(14, 165, 233, 0.22),
+      rgba(99, 102, 241, 0.17)
+    );
+  color: #70d5ff;
+  box-shadow:
+    0 0 30px rgba(14, 165, 233, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.pinHeading {
+  text-align: center;
+}
+
+.pinHeading > span {
+  display: block;
+  margin-bottom: 7px;
+  color: #49bef5;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.19em;
+}
+
+.pinHeading h2 {
+  margin: 0;
+  color: #f5fbff;
+  font-size: 23px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.pinHeading p {
+  margin: 10px 0 0;
+  color: #8092aa;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.pinRealInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pinDots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  margin: 25px 0 12px;
+  cursor: text;
+}
+
+.pinDots span {
+  position: relative;
+  width: 45px;
+  height: 52px;
+  border: 1px solid rgba(100, 116, 139, 0.32);
+  border-radius: 13px;
+  background: rgba(2, 10, 23, 0.56);
+  box-shadow: inset 0 1px 7px rgba(0, 0, 0, 0.28);
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.pinDots span::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  content: "";
+  background: rgba(100, 116, 139, 0.28);
+  transform: translate(-50%, -50%) scale(0.75);
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.pinDots span.filled {
+  border-color: rgba(56, 189, 248, 0.62);
+  background: rgba(14, 165, 233, 0.1);
+  box-shadow:
+    0 0 18px rgba(14, 165, 233, 0.1),
+    inset 0 1px 7px rgba(0, 0, 0, 0.3);
+}
+
+.pinDots span.filled::after {
+  background: #65d5ff;
+  box-shadow: 0 0 13px rgba(56, 189, 248, 0.8);
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.pinMessage {
+  min-height: 18px;
+  margin-bottom: 15px;
+  color: #6f8299;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.pinMessage.error {
+  color: #fb7185;
+}
+
+.pinKeypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+}
+
+.pinKeypad button {
+  min-height: 46px;
+  padding: 0;
+  border: 1px solid rgba(100, 116, 139, 0.2);
+  border-radius: 13px;
+  background: rgba(15, 29, 48, 0.74);
+  color: #e8f7ff;
+  font-size: 16px;
+  font-weight: 850;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+.pinKeypad button:hover {
+  border-color: rgba(56, 189, 248, 0.42);
+  background: rgba(20, 50, 78, 0.85);
+}
+
+.pinKeypad button:active {
+  transform: scale(0.96);
+}
+
+.pinKeypad .pinCancelKey,
+.pinKeypad .pinDeleteKey {
+  color: #91a3b9;
+  font-size: 11px;
+}
+
+.pinKeypad .pinDeleteKey {
+  font-size: 18px;
+}
+
+.pinSubmit {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 12px;
+  border: 1px solid rgba(125, 211, 252, 0.45);
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      110deg,
+      #22aeea,
+      #6d7af4
+    );
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(37, 144, 232, 0.18);
+  transition:
+    opacity 0.18s ease,
+    transform 0.15s ease,
+    box-shadow 0.18s ease;
+}
+
+.pinSubmit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 15px 34px rgba(37, 144, 232, 0.28);
+}
+
+.pinSubmit:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+  box-shadow: none;
+}
+
+.pinShake {
+  animation: pinShake 0.4s ease;
+}
+
+@keyframes pinOverlayIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pinModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pinShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-9px);
+  }
+
+  40% {
+    transform: translateX(8px);
+  }
+
+  60% {
+    transform: translateX(-6px);
+  }
+
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+@media (max-width: 520px) {
+  .pinOverlay {
+    align-items: flex-end;
+    padding: 12px;
+  }
+
+  .pinModal {
+    width: 100%;
+    padding: 27px 20px 21px;
+    border-radius: 23px;
+  }
+
+  .pinDots {
+    gap: 10px;
+  }
+
+  .pinDots span {
+    width: 42px;
+    height: 49px;
+  }
+
+  .pinKeypad button {
+    min-height: 49px;
+  }
+}
