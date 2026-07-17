@@ -146,29 +146,52 @@ export default function App() {
     setMenuOpen(false);
   }
 
-  const recentHeaders = [
-    "갱신시간",
-    "ZONE",
-    "불용 구분",
-    "고객사",
-    "상품코드",
-    "상품명",
-    "LOT",
-    "로케이션",
-    "수량",
-  ];
+const recentHeaders = [
+  "갱신시간",
+  "ZONE",
+  "불용 구분",
+  "고객사",
+  "상품코드",
+  "상품명",
+  "LOT",
+  "로케이션",
+  "수량",
+  "상품",
+];
 
-  const recentRows = (data.recent || []).map((row) => [
+const recentRows = (data.recent || []).map((row, index) => {
+  const productName = String(row.productName || "").trim();
+
+  const productUrl =
+    row.link ||
+    row.productUrl ||
+    row.naverLink ||
+    `https://search.shopping.naver.com/search/all?query=${encodeURIComponent(
+      productName || row.productCode || "",
+    )}`;
+
+  return [
     row.refreshTime || row.time,
     row.zone,
     row.category,
     row.customer,
     row.productCode,
-    row.productName,
+    productName,
     row.lot,
     row.location,
     `${fmt(row.quantity)} EA`,
-  ]);
+    <a
+      key={`product-link-${index}`}
+      href={productUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="productViewLink"
+      title={`${productName || "상품"} 보기`}
+    >
+      상품보기
+    </a>,
+  ];
+});
 
   const adjusted = compMode === "adjusted";
   const compRows = (compensation.rows || []).map((row) =>

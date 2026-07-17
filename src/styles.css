@@ -459,3 +459,35 @@ th { position: sticky; top: 0; z-index: 1; background: #182338; color: #cbd5e1; 
   .appShell.mobileLarge .actions { grid-template-columns: 1fr; }
   .appShell.mobileLarge .periods { grid-template-columns: repeat(2, 1fr); }
 }
+.productViewLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 66px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  border-radius: 7px;
+  background: rgba(14, 165, 233, 0.12);
+  color: #7dd3fc;
+  font-size: 11px;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.productViewLink:hover {
+  background: rgba(14, 165, 233, 0.24);
+  border-color: rgba(125, 211, 252, 0.8);
+  transform: translateY(-1px);
+}
+
+.mobileLarge .productViewLink {
+  min-width: 78px;
+  height: 34px;
+  font-size: 12px;
+}
