@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ArrowLeft,
-  Link2,
   Menu,
   Monitor,
   RefreshCw,
@@ -13,7 +12,7 @@ import {
 import Sidebar from "./components/Sidebar";
 import DashboardPage from "./pages/DashboardPage";
 import TablePage from "./pages/TablePage";
-import { getApiUrl, jsonp, saveApiUrl } from "./utils/api";
+import { jsonp } from "./utils/api";
 import "./styles.css";
 
 const fmt = (value) => Number(value || 0).toLocaleString();
@@ -50,10 +49,7 @@ export default function App() {
     localStorage.getItem("JAVIS_COMPENSATION_MODE") || "gross",
   );
 
-  const hasApi = useMemo(() => {
-    const url = getApiUrl();
-    return Boolean(url && !url.includes("PASTE_APPS_SCRIPT"));
-  }, []);
+  const hasApi = true;
 
   const loadDashboard = useCallback(
     async (silent = false) => {
@@ -145,19 +141,6 @@ export default function App() {
     localStorage.setItem("JAVIS_COMPENSATION_MODE", value);
   }
 
-  function saveConnection() {
-    const input = document.getElementById("apiUrlInput");
-    const value = input?.value.trim() || "";
-
-    if (!value.startsWith("https://script.google.com/")) {
-      setError("올바른 Apps Script 웹앱 URL을 입력하세요.");
-      return;
-    }
-
-    saveApiUrl(value);
-    window.setTimeout(() => window.location.reload(), 50);
-  }
-
   function changePage(nextPage) {
     setPage(nextPage);
     setMenuOpen(false);
@@ -206,7 +189,7 @@ export default function App() {
     dashboard: ["JAVIS LOSS MONITOR", "센터 귀책 FD·FL 중심 운영 손실관리"],
     history: ["LOSS 발생내역", "FD·FL·CR 불용재고 발생 내역"],
     ai: ["JAVIS AI 분석", "최근 센터 LOSS 데이터 기반 운영 분석"],
-    settings: ["시스템 설정", "연결 및 관리자 기능"],
+    settings: ["시스템 설정", "관리자 기능"],
     compensation: ["변상금 관리", "판매가 및 예상 변상금 현황"],
     management: ["운영관리", "원인·담당자·조치·처리상태 관리"],
   }[page] || ["JAVIS LOSS", "운영 손실관리 시스템"];
@@ -264,11 +247,6 @@ export default function App() {
         {error && (
           <div className="errorBox">
             <span>{error}</span>
-            {!hasApi && (
-              <button type="button" onClick={() => changePage("settings")}>
-                연결 설정 열기
-              </button>
-            )}
           </div>
         )}
 
@@ -298,32 +276,16 @@ export default function App() {
               </button>
             </div>
             <div className="aiText">
-              {data.ai?.content || data.aiText || "AI 분석 결과가 없습니다."}
+              {data.ai?.text ||
+  data.ai?.content ||
+  data.aiText ||
+  "AI 분석 결과가 없습니다."}
             </div>
           </section>
         )}
 
         {page === "settings" && (
           <div className="settingsPage">
-            <section className="panel">
-              <div className="panelTitle">
-                <div>
-                  <h2>연결 설정</h2>
-                  <p>Apps Script 웹앱 API 주소</p>
-                </div>
-                <Link2 size={20} />
-              </div>
-              <label htmlFor="apiUrlInput">Apps Script 웹앱 URL</label>
-              <input
-                id="apiUrlInput"
-                defaultValue={getApiUrl().includes("PASTE_APPS_SCRIPT") ? "" : getApiUrl()}
-                placeholder="https://script.google.com/macros/s/.../exec"
-              />
-              <button type="button" className="primary saveBtn" onClick={saveConnection}>
-                저장 후 다시 연결
-              </button>
-            </section>
-
             <section className="panel">
               <div className="panelTitle">
                 <div>
