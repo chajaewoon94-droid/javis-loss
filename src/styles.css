@@ -851,3 +851,601 @@ body.pinModalOpen {
     min-height: 49px;
   }
 }
+
+/* JAVIS LOSS V5 ADD-ON
+   기존 src/styles.css 맨 아래에 전부 붙여넣으세요.
+*/
+
+:root {
+  --jv-cyan: #38bdf8;
+  --jv-glass: rgba(10, 24, 45, 0.66);
+  --jv-line: rgba(125, 211, 252, 0.17);
+}
+
+body {
+  background:
+    radial-gradient(circle at 15% 10%, rgba(37, 99, 235, .12), transparent 30%),
+    radial-gradient(circle at 85% 0%, rgba(56, 189, 248, .10), transparent 28%),
+    #020817;
+}
+
+.appShell {
+  opacity: 0;
+  transform: scale(.995);
+  transition: opacity .55s ease, transform .55s ease;
+}
+
+.appShell.appReady {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.pageTransition {
+  animation: pageIn .38s ease both;
+}
+
+.panel,
+.kpiCard,
+.statusBar,
+.topbar {
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.glassPanel,
+.kpiCard {
+  background: linear-gradient(145deg, rgba(15, 31, 56, .82), rgba(5, 14, 28, .76));
+  border: 1px solid var(--jv-line);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035), 0 18px 55px rgba(0,0,0,.24);
+}
+
+.kpiCard {
+  position: relative;
+  overflow: hidden;
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+
+.kpiCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(56,189,248,.35);
+  box-shadow: 0 22px 60px rgba(0,0,0,.32), 0 0 28px rgba(56,189,248,.08);
+}
+
+.kpiGlow {
+  position: absolute;
+  right: -55px;
+  bottom: -75px;
+  width: 145px;
+  height: 145px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56,189,248,.14), transparent 67%);
+  pointer-events: none;
+}
+
+.kpiCard.major strong {
+  color: #d9f5ff;
+  text-shadow: 0 0 20px rgba(56,189,248,.35);
+}
+
+.glassTabs {
+  padding: 5px;
+  border: 1px solid rgba(125,211,252,.13);
+  border-radius: 15px;
+  background: rgba(8,18,35,.55);
+  backdrop-filter: blur(14px);
+}
+
+.rankRow {
+  width: 100%;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.rankRow:hover {
+  background: rgba(56,189,248,.06);
+}
+
+.productViewLink {
+  border: 1px solid rgba(56,189,248,.3);
+  border-radius: 10px;
+  padding: 7px 10px;
+  background: rgba(14,165,233,.10);
+  color: #7dd3fc;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.bootScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at center, rgba(14,165,233,.10), transparent 30%), #020611;
+  transition: opacity .5s ease, visibility .5s ease;
+}
+
+.bootScreen.leaving {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.bootCore {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+  padding: 34px;
+}
+
+.bootOrb {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  display: grid;
+  place-items: center;
+}
+
+.bootOrb span {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(56,189,248,.42);
+  border-radius: 50%;
+  animation: bootSpin 5s linear infinite;
+}
+
+.bootOrb span:nth-child(2) {
+  inset: 16px;
+  border-style: dashed;
+  animation-direction: reverse;
+  animation-duration: 3.5s;
+}
+
+.bootOrb span:nth-child(3) {
+  inset: 34px;
+  box-shadow: inset 0 0 35px rgba(56,189,248,.16), 0 0 40px rgba(56,189,248,.12);
+}
+
+.bootOrb b {
+  color: #dff7ff;
+  font-size: 48px;
+  text-shadow: 0 0 22px rgba(56,189,248,.72);
+}
+
+.bootText small {
+  color: #38bdf8;
+  letter-spacing: .22em;
+  font-size: 10px;
+}
+
+.bootText h1 {
+  margin: 7px 0 2px;
+  color: white;
+  font-size: 55px;
+  letter-spacing: .06em;
+}
+
+.bootText p {
+  min-height: 24px;
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.bootText em {
+  display: block;
+  margin-top: 13px;
+  color: #7890ac;
+  font-size: 11px;
+  font-style: normal;
+}
+
+.bootProgress {
+  width: 310px;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: rgba(148,163,184,.14);
+}
+
+.bootProgress i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #0ea5e9, #6366f1);
+  box-shadow: 0 0 18px rgba(56,189,248,.75);
+  transition: width .55s ease;
+}
+
+.voiceOverlay,
+.productOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9997;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(2,6,18,.75);
+  backdrop-filter: blur(14px);
+}
+
+.voicePanel,
+.productModal {
+  position: relative;
+  width: min(100%, 460px);
+  padding: 30px;
+  border: 1px solid rgba(56,189,248,.26);
+  border-radius: 25px;
+  background: linear-gradient(145deg, rgba(13,29,52,.97), rgba(4,12,25,.98));
+  box-shadow: 0 32px 90px rgba(0,0,0,.55), 0 0 40px rgba(56,189,248,.08);
+}
+
+.voiceClose,
+.productClose {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  border: 0;
+  background: transparent;
+  color: #8fa4bd;
+  cursor: pointer;
+}
+
+.voiceOrb {
+  position: relative;
+  width: 94px;
+  height: 94px;
+  margin: 0 auto 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #dff8ff;
+  background: radial-gradient(circle, rgba(56,189,248,.25), rgba(14,35,61,.55));
+  box-shadow: 0 0 38px rgba(56,189,248,.16);
+}
+
+.voiceOrb span {
+  position: absolute;
+  inset: -7px;
+  border: 1px solid rgba(56,189,248,.25);
+  border-radius: 50%;
+}
+
+.voiceOrb.listening span {
+  animation: voicePulse 1.2s ease-out infinite;
+}
+
+.voicePanel > small,
+.productInfo > small {
+  display: block;
+  color: #38bdf8;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .17em;
+  text-align: center;
+}
+
+.voicePanel h2,
+.voicePanel p {
+  text-align: center;
+}
+
+.voiceTranscript {
+  margin: 18px 0;
+  min-height: 48px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(2,10,22,.55);
+  color: #cbd5e1;
+  text-align: center;
+}
+
+.voiceActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.voiceActions button,
+.productInfo > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 45px;
+  border: 1px solid rgba(56,189,248,.26);
+  border-radius: 13px;
+  background: rgba(14,165,233,.10);
+  color: #dff8ff;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.productModal {
+  width: min(100%, 760px);
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 25px;
+}
+
+.productVisual {
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  border-radius: 19px;
+  background: radial-gradient(circle, rgba(56,189,248,.13), rgba(3,11,23,.7));
+  color: #38bdf8;
+}
+
+.productVisual img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 19px;
+}
+
+.productInfo > small {
+  text-align: left;
+}
+
+.productStats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.productStats div {
+  padding: 13px;
+  border: 1px solid rgba(148,163,184,.12);
+  border-radius: 13px;
+  background: rgba(2,10,22,.45);
+}
+
+.productStats span,
+.productStats strong {
+  display: block;
+}
+
+.productStats span {
+  color: #71849b;
+  font-size: 10px;
+}
+
+.productStats strong {
+  margin-top: 4px;
+  color: white;
+  font-size: 13px;
+}
+
+.lossToast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 9996;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  width: min(calc(100% - 40px), 390px);
+  padding: 15px;
+  border: 1px solid rgba(248,113,113,.35);
+  border-radius: 17px;
+  background: rgba(31,10,18,.93);
+  box-shadow: 0 18px 60px rgba(0,0,0,.4), 0 0 30px rgba(239,68,68,.12);
+  animation: toastIn .4s ease;
+}
+
+.lossToastIcon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: rgba(239,68,68,.16);
+  color: #fb7185;
+}
+
+.lossToast small,
+.lossToast strong,
+.lossToast span {
+  display: block;
+}
+
+.lossToast small {
+  color: #fb7185;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .14em;
+}
+
+.lossToast strong {
+  margin: 3px 0;
+  color: white;
+  font-size: 12px;
+}
+
+.lossToast span {
+  color: #9aa9bb;
+  font-size: 11px;
+}
+
+.lossToast > button {
+  border: 0;
+  background: transparent;
+  color: #8292a8;
+  cursor: pointer;
+}
+
+.aiDrawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9995;
+  width: min(100%, 430px);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: rgba(4,12,25,.97);
+  border-left: 1px solid rgba(56,189,248,.2);
+  box-shadow: -25px 0 80px rgba(0,0,0,.45);
+  backdrop-filter: blur(20px);
+  animation: drawerIn .35s ease;
+}
+
+.aiDrawer header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px;
+  border-bottom: 1px solid rgba(148,163,184,.12);
+}
+
+.aiDrawer header > div {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #7dd3fc;
+}
+
+.aiDrawer header span,
+.aiDrawer header strong,
+.aiDrawer header small {
+  display: block;
+}
+
+.aiDrawer header button {
+  border: 0;
+  background: transparent;
+  color: #8fa1b6;
+  cursor: pointer;
+}
+
+.aiMessages {
+  overflow: auto;
+  padding: 18px;
+}
+
+.aiWelcome {
+  min-height: 65%;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  color: #7dd3fc;
+  text-align: center;
+}
+
+.aiWelcome span {
+  color: #7c8ca2;
+  font-size: 12px;
+}
+
+.aiBubble {
+  width: fit-content;
+  max-width: 88%;
+  margin-bottom: 11px;
+  padding: 12px 14px;
+  border-radius: 15px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.aiBubble.user {
+  margin-left: auto;
+  background: linear-gradient(135deg, #0ea5e9, #4f46e5);
+  color: white;
+}
+
+.aiBubble.assistant {
+  background: rgba(15,31,52,.85);
+  border: 1px solid rgba(148,163,184,.12);
+  color: #d7e3f0;
+}
+
+.aiDrawer form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 9px;
+  padding: 14px;
+  border-top: 1px solid rgba(148,163,184,.12);
+}
+
+.aiDrawer input {
+  min-width: 0;
+  border: 1px solid rgba(148,163,184,.16);
+  border-radius: 13px;
+  padding: 0 13px;
+  background: rgba(2,10,22,.7);
+  color: white;
+}
+
+.aiDrawer form button {
+  width: 43px;
+  height: 43px;
+  border: 0;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #0ea5e9, #4f46e5);
+  color: white;
+}
+
+@keyframes bootSpin { to { transform: rotate(360deg); } }
+@keyframes voicePulse {
+  0% { transform: scale(.88); opacity: .8; }
+  100% { transform: scale(1.25); opacity: 0; }
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(18px) scale(.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes drawerIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 700px) {
+  .bootCore {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .bootText h1 {
+    font-size: 43px;
+  }
+
+  .bootProgress {
+    width: min(78vw, 310px);
+  }
+
+  .productModal {
+    grid-template-columns: 1fr;
+    max-height: 88vh;
+    overflow: auto;
+  }
+
+  .productVisual {
+    min-height: 190px;
+  }
+
+  .voicePanel,
+  .productModal {
+    padding: 24px 18px;
+  }
+
+  .voiceActions {
+    grid-template-columns: 1fr;
+  }
+
+  .lossToast {
+    right: 12px;
+    bottom: 12px;
+    width: calc(100% - 24px);
+  }
+}
