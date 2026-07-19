@@ -9,6 +9,7 @@ import VoiceAssistant from "./components/VoiceAssistant";
 import LiveLossToast from "./components/LiveLossToast";
 import ProductModal from "./components/ProductModal";
 import AiAssistantPanel from "./components/AiAssistantPanel";
+import SystemStatusHUD from "./components/SystemStatusHUD";
 import DashboardPage from "./pages/DashboardPage";
 import TablePage from "./pages/TablePage";
 import { jsonp } from "./utils/api";
@@ -216,19 +217,115 @@ export default function App() {
     );
   }
 
-  function handleVoiceCommand(command) {
+  async function handleVoiceCommand(command) {
     const text = command.replace(/\s/g, "");
+    const upper = text.toUpperCase();
+    const k = data.kpi || {};
 
-    if (text.includes("대시보드")) changePage("dashboard");
-    else if (text.includes("발생내역")) changePage("history");
-    else if (text.includes("설정")) openSettings();
-    else if (text.includes("AI") || text.includes("분석")) setAiOpen(true);
-    else if (text.includes("새로고침") || text.includes("갱신")) loadDashboard();
+    if (text.includes("대시보드") || text.includes("메인화면")) {
+      changePage("dashboard");
+      return `대시보드로 이동했습니다. 선택 기간 센터 로스는 ${fmt(k.selectedQty)}개입니다.`;
+    }
+
+    if (
+      text.includes("발생내역") ||
+      text.includes("로스내역") ||
+      text.includes("내역보여")
+    ) {
+      changePage("history");
+      return `로스 발생 내역으로 이동했습니다. 최신 ${Math.min(
+        50,
+        (data.recent || []).length
+      )}건을 표시합니다.`;
+    }
+
+    if (text.includes("AI화면") || text.includes("분석화면")) {
+      changePage("ai");
+      setAiOpen(true);
+      return "에이 아이 운영 분석 화면과 대화 패널을 열었습니다.";
+    }
+
+    if (text.includes("변상금")) {
+      if (isAdminAuthenticated()) {
+        changePage("compensation");
+        return "변상금 관리 화면으로 이동했습니다.";
+      }
+      openSettings();
+      return "변상금 관리 접근을 위해 관리자 인증 화면을 열었습니다.";
+    }
+
+    if (text.includes("운영관리")) {
+      if (isAdminAuthenticated()) {
+        changePage("management");
+        return "운영관리 화면으로 이동했습니다.";
+      }
+      openSettings();
+      return "운영관리 접근을 위해 관리자 인증 화면을 열었습니다.";
+    }
+
+    if (text.includes("설정")) {
+      openSettings();
+      return "관리자 인증 화면을 준비했습니다.";
+    }
+
+    if (text.includes("새로고침") || text.includes("갱신") || text.includes("동기화")) {
+      await loadDashboard();
+      return `최신 데이터로 동기화했습니다. 현재 선택 기간 로스는 ${fmt(
+        k.selectedQty
+      )}개입니다.`;
+    }
+
+    if (text.includes("오늘")) {
+      setPeriod("today");
+    } else if (text.includes("7일") || text.includes("일주일")) {
+      setPeriod("7d");
+    } else if (text.includes("30일")) {
+      setPeriod("30d");
+    } else if (text.includes("이번달") || text.includes("월간")) {
+      setPeriod("month");
+    } else if (text.includes("전체기간")) {
+      setPeriod("all");
+    }
+
+    if (
+      text.includes("브리핑") ||
+      text.includes("현황") ||
+      text.includes("오늘로스") ||
+      text === "로스" ||
+      upper === "LOSS"
+    ) {
+      return briefingText;
+    }
+
+    if (text.includes("에프디") || upper.includes("FD")) {
+      return `선택 기간 에프 디는 ${fmt(k.fdQty)}개입니다. 센터 파손 발생 내역을 확인하겠습니다.`;
+    }
+
+    if (text.includes("에프엘") || upper.includes("FL")) {
+      return `선택 기간 에프 엘은 ${fmt(k.flQty)}개입니다. 센터 분실 발생 내역을 우선 확인하는 것이 좋겠습니다.`;
+    }
+
+    if (
+      text.includes("분석") ||
+      text.includes("왜") ||
+      text.includes("원인") ||
+      text.includes("대응")
+    ) {
+      setAiOpen(true);
+      try {
+        const answer = await askAi(command);
+        return answer || "에이 아이 분석 화면을 열었습니다.";
+      } catch {
+        return "에이 아이 분석 패널을 열었습니다. 서버 분석 응답은 잠시 후 다시 시도해 주십시오.";
+      }
+    }
+
+    return "명령을 확인하지 못했습니다. 로스 브리핑, 발생 내역, 데이터 갱신, 에프 디, 에프 엘, 원인 분석 또는 화면 이동을 말씀해 주십시오.";
   }
 
   const briefingText = useMemo(() => {
     const k = data.kpi || {};
-    return `안녕하세요 차재운 대리님. 선택 기간 센터 로스는 ${fmt(k.selectedQty)}개이며, FD는 ${fmt(k.fdQty)}개, FL은 ${fmt(k.flQty)}개입니다.`;
+    return `차재운 대리님, 작전 브리핑입니다. 선택 기간 센터 로스는 ${fmt(k.selectedQty)}개입니다. 에프 디는 ${fmt(k.fdQty)}개, 에프 엘은 ${fmt(k.flQty)}개입니다. 현재 주요 유형은 ${Number(k.fdQty || 0) > Number(k.flQty || 0) ? "에프 디" : Number(k.flQty || 0) > 0 ? "에프 엘" : "없음"}입니다.`;
   }, [data.kpi]);
 
   const recentHeaders = [
@@ -274,7 +371,7 @@ export default function App() {
   };
 
   const pageInfo = {
-    dashboard: ["JAVIS LOSS MONITOR", "센터 귀책 FD·FL 중심 운영 손실관리"],
+    dashboard: ["JAVIS LOSS MONITOR V10", "센터 귀책 FD·FL 중심 운영 손실관리"],
     history: ["LOSS 발생내역", "FD·FL·CR 불용재고 발생 내역"],
     ai: ["JAVIS AI 분석", "최근 센터 LOSS 데이터 기반 운영 분석"],
     settings: ["시스템 설정", "관리자 기능"],
@@ -335,6 +432,14 @@ export default function App() {
             <span><i />마지막 데이터: <strong>{data.meta?.lastRefresh || "-"}</strong></span>
             <span>30초 자동 새로고침 · {periodName[period]}</span>
           </div>
+
+          <SystemStatusHUD
+            data={data}
+            loading={loading}
+            error={error}
+            voiceOpen={voiceOpen}
+            aiOpen={aiOpen}
+          />
 
           {error && <div className="errorBox"><span>{error}</span></div>}
 
