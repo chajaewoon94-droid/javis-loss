@@ -10,6 +10,7 @@ import LiveLossToast from "./components/LiveLossToast";
 import ProductModal from "./components/ProductModal";
 import AiAssistantPanel from "./components/AiAssistantPanel";
 import SystemStatusHUD from "./components/SystemStatusHUD";
+import ClapWakeDetector from "./components/ClapWakeDetector";
 import DashboardPage from "./pages/DashboardPage";
 import TablePage from "./pages/TablePage";
 import { jsonp } from "./utils/api";
@@ -18,6 +19,7 @@ import "./styles.css";
 const ADMIN_PIN = "1531";
 const ADMIN_AUTH_KEY = "JAVIS_ADMIN_AUTH_UNTIL";
 const ADMIN_AUTH_MINUTES = 30;
+const DAILY_BRIEFING_KEY = "JAVIS_DAILY_BRIEFING_DATE";
 const fmt = (value) => Number(value || 0).toLocaleString();
 
 const periodName = {
@@ -61,6 +63,8 @@ export default function App() {
   const pinInputRef = useRef(null);
 
   const [voiceOpen, setVoiceOpen] = useState(false);
+  const [voiceWakeRequest, setVoiceWakeRequest] = useState(0);
+  const [voiceInitialMessage, setVoiceInitialMessage] = useState("");
   const [aiOpen, setAiOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [liveLoss, setLiveLoss] = useState(null);
@@ -218,28 +222,26 @@ export default function App() {
   }
 
   async function handleVoiceCommand(command) {
-    const text = command.replace(/\s/g, "");
+    const original = String(command || "").trim();
+    const text = original
+      .replace(/[,.!?~]/g, "")
+      .replace(/\s+/g, "")
+      .replace(/로쓰|로스스/g, "로스");
     const upper = text.toUpperCase();
     const k = data.kpi || {};
+    const includesAny = (...words) => words.some((word) => text.includes(word));
 
-    if (text.includes("대시보드") || text.includes("메인화면")) {
+    if (includesAny("대시보드", "메인화면", "처음화면", "홈화면", "홈으로")) {
       changePage("dashboard");
       return `대시보드로 이동했습니다. 선택 기간 센터 로스는 ${fmt(k.selectedQty)}개입니다.`;
     }
 
-    if (
-      text.includes("발생내역") ||
-      text.includes("로스내역") ||
-      text.includes("내역보여")
-    ) {
+    if (includesAny("발생내역", "로스내역", "내역보여", "내역열어", "상세내역", "목록보여")) {
       changePage("history");
-      return `로스 발생 내역으로 이동했습니다. 최신 ${Math.min(
-        50,
-        (data.recent || []).length
-      )}건을 표시합니다.`;
+      return `로스 발생 내역으로 이동했습니다. 최신 ${Math.min(50, (data.recent || []).length)}건을 표시합니다.`;
     }
 
-    if (text.includes("AI화면") || text.includes("분석화면")) {
+    if (includesAny("AI화면", "에이아이화면", "분석화면", "대화창")) {
       changePage("ai");
       setAiOpen(true);
       return "에이 아이 운영 분석 화면과 대화 패널을 열었습니다.";
@@ -268,65 +270,81 @@ export default function App() {
       return "관리자 인증 화면을 준비했습니다.";
     }
 
-    if (text.includes("새로고침") || text.includes("갱신") || text.includes("동기화")) {
+    if (includesAny("새로고침", "갱신", "동기화", "최신데이터", "업데이트")) {
       await loadDashboard();
-      return `최신 데이터로 동기화했습니다. 현재 선택 기간 로스는 ${fmt(
-        k.selectedQty
-      )}개입니다.`;
+      return `최신 데이터로 동기화했습니다. 현재 선택 기간 로스는 ${fmt(k.selectedQty)}개입니다.`;
     }
 
-    if (text.includes("오늘")) {
-      setPeriod("today");
-    } else if (text.includes("7일") || text.includes("일주일")) {
-      setPeriod("7d");
-    } else if (text.includes("30일")) {
-      setPeriod("30d");
-    } else if (text.includes("이번달") || text.includes("월간")) {
-      setPeriod("month");
-    } else if (text.includes("전체기간")) {
-      setPeriod("all");
-    }
+    if (includesAny("오늘", "금일")) setPeriod("today");
+    else if (includesAny("7일", "일주일", "한주")) setPeriod("7d");
+    else if (includesAny("30일", "한달", "최근한달")) setPeriod("30d");
+    else if (includesAny("이번달", "월간", "당월")) setPeriod("month");
+    else if (includesAny("전체기간", "전체로스", "누적전체")) setPeriod("all");
 
-    if (
-      text.includes("브리핑") ||
-      text.includes("현황") ||
-      text.includes("오늘로스") ||
-      text === "로스" ||
-      upper === "LOSS"
-    ) {
-      return briefingText;
-    }
+    const asksLoss = includesAny(
+      "로스", "LOSS", "손실", "브리핑", "현황", "몇건", "몇개", "상황", "알려줘", "보고해"
+    );
+    const asksAnalysis = includesAny("분석", "왜", "원인", "이유", "대응", "대책", "문제", "위험", "이상징후");
 
-    if (text.includes("에프디") || upper.includes("FD")) {
+    if (includesAny("에프디", "FD", "파손")) {
+      if (asksAnalysis) {
+        setAiOpen(true);
+        try { return await askAi(original); } catch { /* 아래 기본 답변 사용 */ }
+      }
       return `선택 기간 에프 디는 ${fmt(k.fdQty)}개입니다. 센터 파손 발생 내역을 확인하겠습니다.`;
     }
 
-    if (text.includes("에프엘") || upper.includes("FL")) {
+    if (includesAny("에프엘", "FL", "분실")) {
+      if (asksAnalysis) {
+        setAiOpen(true);
+        try { return await askAi(original); } catch { /* 아래 기본 답변 사용 */ }
+      }
       return `선택 기간 에프 엘은 ${fmt(k.flQty)}개입니다. 센터 분실 발생 내역을 우선 확인하는 것이 좋겠습니다.`;
     }
 
-    if (
-      text.includes("분석") ||
-      text.includes("왜") ||
-      text.includes("원인") ||
-      text.includes("대응")
-    ) {
+    if (asksAnalysis) {
       setAiOpen(true);
       try {
-        const answer = await askAi(command);
+        const answer = await askAi(original);
         return answer || "에이 아이 분석 화면을 열었습니다.";
       } catch {
-        return "에이 아이 분석 패널을 열었습니다. 서버 분석 응답은 잠시 후 다시 시도해 주십시오.";
+        return `${briefingText} 서버 분석 응답이 지연되고 있습니다. 잠시 후 다시 시도해 주십시오.`;
       }
     }
 
-    return "명령을 확인하지 못했습니다. 로스 브리핑, 발생 내역, 데이터 갱신, 에프 디, 에프 엘, 원인 분석 또는 화면 이동을 말씀해 주십시오.";
+    if (asksLoss || text.length <= 8) return briefingText;
+
+    // 정해진 명령이 아니어도 AI에 넘겨 자연어 질문에 답합니다.
+    setAiOpen(true);
+    try {
+      const answer = await askAi(original);
+      return answer || briefingText;
+    } catch {
+      return `${briefingText} 질문의 상세 분석은 서버 연결 후 다시 시도해 주십시오.`;
+    }
   }
 
   const briefingText = useMemo(() => {
     const k = data.kpi || {};
     return `차재운 대리님, 작전 브리핑입니다. 선택 기간 센터 로스는 ${fmt(k.selectedQty)}개입니다. 에프 디는 ${fmt(k.fdQty)}개, 에프 엘은 ${fmt(k.flQty)}개입니다. 현재 주요 유형은 ${Number(k.fdQty || 0) > Number(k.flQty || 0) ? "에프 디" : Number(k.flQty || 0) > 0 ? "에프 엘" : "없음"}입니다.`;
   }, [data.kpi]);
+
+  function requestVoiceWake(source = "manual") {
+    const today = new Date().toLocaleDateString("sv-SE");
+    const alreadyBriefed = localStorage.getItem(DAILY_BRIEFING_KEY) === today;
+    const firstBriefing = !alreadyBriefed && Boolean(data.kpi);
+
+    if (firstBriefing) localStorage.setItem(DAILY_BRIEFING_KEY, today);
+    setVoiceInitialMessage(
+      firstBriefing
+        ? `좋은 하루입니다, 차재운 대리님. ${briefingText} 명령을 기다리겠습니다.`
+        : source === "clap"
+          ? "네, 차재운 대리님."
+          : "자비스 음성 시스템을 열었습니다. 명령을 말씀하십시오."
+    );
+    setVoiceOpen(true);
+    setVoiceWakeRequest(Date.now());
+  }
 
   const recentHeaders = [
     "갱신시간", "ZONE", "불용 구분", "고객사", "상품코드",
@@ -371,7 +389,7 @@ export default function App() {
   };
 
   const pageInfo = {
-    dashboard: ["JAVIS LOSS MONITOR V10", "센터 귀책 FD·FL 중심 운영 손실관리"],
+    dashboard: ["JAVIS LOSS MONITOR V15", "센터 귀책 FD·FL 중심 운영 손실관리"],
     history: ["LOSS 발생내역", "FD·FL·CR 불용재고 발생 내역"],
     ai: ["JAVIS AI 분석", "최근 센터 LOSS 데이터 기반 운영 분석"],
     settings: ["시스템 설정", "관리자 기능"],
@@ -405,8 +423,13 @@ export default function App() {
             </div>
 
             <div className="actions">
-              <button type="button" onClick={() => setVoiceOpen(true)}>
-                <Mic size={16} />음성비서
+              <ClapWakeDetector
+                disabled={voiceOpen}
+                onDoubleClap={() => requestVoiceWake("clap")}
+              />
+
+              <button type="button" className="manualVoiceBtn" onClick={() => requestVoiceWake("manual")}>
+                <Mic size={16} />수동 호출
               </button>
 
               <button type="button" onClick={toggleMode}>
@@ -612,6 +635,8 @@ export default function App() {
 
         <VoiceAssistant
           open={voiceOpen}
+          wakeRequest={voiceWakeRequest}
+          initialMessage={voiceInitialMessage}
           onClose={() => setVoiceOpen(false)}
           onCommand={handleVoiceCommand}
           briefingText={briefingText}

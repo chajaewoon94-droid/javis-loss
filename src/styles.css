@@ -2572,3 +2572,250 @@ body {
   .v10VoiceTop em { max-width: 92%; }
   .v10VoiceOrb { width: 116px; height: 116px; }
 }
+
+/* =========================================================
+   JAVIS LOSS V15 — DOUBLE CLAP + MOBILE VOICE FIX
+========================================================= */
+
+.clapWake {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.clapWake button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid rgba(56, 189, 248, .22);
+  border-radius: 10px;
+  color: #a6dbef;
+  background: rgba(3, 17, 31, .76);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.clapWake button i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #64748b;
+}
+
+.clapWake.listening button i,
+.clapWake.one button i {
+  background: #2dd4bf;
+  box-shadow: 0 0 10px #2dd4bf;
+  animation: v10Blink 1.25s ease-in-out infinite;
+}
+
+.clapWake.one button {
+  border-color: rgba(250, 204, 21, .42);
+  color: #fde68a;
+}
+
+.clapWake.detected button {
+  border-color: rgba(45, 212, 191, .55);
+  color: #ccfbf1;
+  box-shadow: 0 0 22px rgba(45, 212, 191, .17);
+}
+
+.clapWake.error button {
+  border-color: rgba(251, 113, 133, .35);
+  color: #fecdd3;
+}
+
+.clapWake small {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  z-index: 20;
+  width: 240px;
+  padding: 7px 9px;
+  border: 1px solid rgba(251, 113, 133, .22);
+  border-radius: 8px;
+  color: #fecdd3;
+  background: rgba(18, 5, 11, .96);
+  font-size: 9px;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.manualVoiceBtn {
+  opacity: .78;
+}
+
+.v15VoiceOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 14px;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background:
+    radial-gradient(circle at 50% 32%, rgba(0, 194, 255, .20), transparent 30%),
+    linear-gradient(rgba(0, 3, 11, .90), rgba(0, 2, 8, .99));
+  backdrop-filter: blur(13px);
+}
+
+.v15VoicePanel {
+  display: flex;
+  width: min(95vw, 640px);
+  max-height: min(92dvh, 850px);
+  flex-direction: column;
+  padding: 22px 28px 20px;
+  overflow: hidden;
+  border-color: rgba(92, 225, 255, .44);
+  background: linear-gradient(155deg, rgba(5, 22, 43, .99), rgba(0, 6, 16, .997));
+}
+
+.v15VoicePrimary {
+  flex: 0 0 auto;
+  text-align: center;
+}
+
+.v15VoicePrimary > small,
+.v15VoicePrimary > h2,
+.v15VoicePrimary > p {
+  display: block;
+  text-align: center;
+}
+
+.v15VoiceSecondary {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+@media (max-width: 700px) {
+  .actions .clapWake {
+    order: -3;
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .actions .clapWake button {
+    width: 100%;
+  }
+
+  .actions .manualVoiceBtn {
+    order: -2;
+  }
+
+  .v15VoiceOverlay {
+    align-items: stretch;
+    padding: 0;
+  }
+
+  .v15VoicePanel {
+    width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    padding: max(15px, env(safe-area-inset-top)) 14px max(14px, env(safe-area-inset-bottom));
+    border: 0;
+    border-radius: 0;
+  }
+
+  .v15VoicePanel .voiceClose {
+    position: fixed;
+    top: max(12px, env(safe-area-inset-top));
+    right: 12px;
+    z-index: 10;
+  }
+
+  .v15VoicePanel .v10VoiceTop {
+    min-height: 34px;
+    margin-right: 36px;
+    margin-bottom: 4px;
+  }
+
+  .v15VoicePanel .v10VoiceTelemetry {
+    margin-bottom: 6px;
+    gap: 4px;
+  }
+
+  .v15VoicePanel .v10VoiceTelemetry span {
+    padding: 3px 6px;
+    font-size: 7px;
+  }
+
+  .v15VoicePanel .v10VoiceOrb {
+    width: 94px;
+    height: 94px;
+    margin: 4px auto 5px;
+  }
+
+  .v15VoicePrimary h2 {
+    margin: 2px 0 1px;
+    font-size: 20px;
+  }
+
+  .v15VoicePrimary > p {
+    margin: 0 0 2px;
+    font-size: 9px;
+  }
+
+  .v15VoicePanel .v10VoiceWave {
+    height: 36px;
+    margin: 2px 0;
+  }
+
+  .v15VoicePanel .v10Transcript {
+    min-height: 40px;
+    padding: 8px;
+    font-size: 11px;
+  }
+
+  .v15VoiceSecondary {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+  }
+
+  .v15VoicePanel .v10DialogueLog {
+    min-height: 55px;
+    max-height: 88px;
+    margin: 7px 0;
+    padding: 7px 9px;
+  }
+
+  .v15VoicePanel .v10VoiceActions {
+    position: sticky;
+    bottom: 0;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 5px;
+    background: linear-gradient(transparent, rgba(0, 6, 16, .99) 18%);
+  }
+
+  .v15VoicePanel .v10VoiceActions button {
+    min-height: 42px;
+  }
+
+  .v15VoicePanel .v10VoiceHint {
+    margin-top: 5px;
+    font-size: 8px;
+  }
+}
+
+@media (max-height: 690px) and (max-width: 700px) {
+  .v15VoicePanel .v10VoiceTop em,
+  .v15VoicePanel .v10VoiceHint,
+  .v15VoicePanel .v10DialogueLog {
+    display: none;
+  }
+
+  .v15VoicePanel .v10VoiceOrb {
+    width: 78px;
+    height: 78px;
+  }
+}
